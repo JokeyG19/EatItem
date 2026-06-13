@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FF4757">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>吃货遗愿清单</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- iOS 安装提示 -->
+  <div class="ios-install-banner hidden" id="iosBanner">
+    <div class="ios-banner-content">
+      <span>点击 <span class="ios-icon">📱</span> 添加到主屏幕</span>
+      <button id="btnCloseIOSBanner">×</button>
+    </div>
+  </div>
+
+  <!-- 启动画面 -->
+  <div id="splash" class="splash">
+    <div class="splash-content">
+      <div class="splash-bowl">🍽️</div>
+      <p class="splash-text">吃完再说</p>
+    </div>
+  </div>
+
+  <!-- 主应用 -->
+  <div id="app" class="hidden">
+    <!-- 顶部导航 -->
+    <header class="header">
+      <div class="header-left">
+        <h1 class="title">吃货遗愿清单</h1>
+        <p class="slogan">吃完再说</p>
+      </div>
+      <div class="header-right">
+        <button class="btn-data-small" id="btnExport" title="导出备份">📤</button>
+        <button class="btn-data-small" id="btnImport" title="导入恢复">📥</button>
+      </div>
+    </header>
+
+    <!-- 仪表盘 -->
+    <section class="stats-card">
+      <div class="stats-grid">
+        <div class="stat-box completed">
+          <div class="stat-icon">🏆</div>
+          <span class="stat-num" id="completedCount">0</span>
+          <span class="stat-label">已打卡</span>
+        </div>
+        <div class="stat-box pending">
+          <div class="stat-icon">🎯</div>
+          <span class="stat-num" id="pendingCount">0</span>
+          <span class="stat-label">待完成</span>
+        </div>
+      </div>
+      <div class="progress-section" id="progressSection">
+        <div class="progress-header">
+          <span class="progress-label">年度进度</span>
+          <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 操作按钮区 -->
+    <div class="action-bar">
+      <div class="quick-add-card" id="quickAddCard">
+        <div class="quick-add-icon">🎁</div>
+        <div class="quick-add-info">
+          <h3>懒人一键添加</h3>
+        </div>
+      </div>
+      <button class="btn-action" id="btnRandom">
+        <span>🎲 有什么好吃的？</span>
+      </button>
+      <button class="btn-action" id="btnMapView">🗺️ 地图</button>
+    </div>
+
+    <!-- 倒计时 + 筛选栏 -->
+    <div class="countdown-filter-bar">
+      <div class="countdown-mini" id="countdownMini">
+        <span class="countdown-mini-text" id="countdownMiniText">⏳ 设定目标日期</span>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="pending">待完成</button>
+        <button class="filter-btn" data-filter="completed">已完成</button>
+      </div>
+    </div>
+
+    <!-- 随机推荐弹窗 -->
+    <div class="random-card hidden" id="randomCard">
+      <div class="random-header">
+        <span class="random-title">🎲 今天的美食任务</span>
+        <button class="btn-close-random" id="btnCloseRandom">×</button>
+      </div>
+      <div class="random-content" id="randomContent"></div>
+      <div class="random-actions">
+        <button class="btn-random-add" id="btnRandomAdd">➕ 添加</button>
+        <button class="btn-random-eat" id="btnRandomEat">🍽️ 吃过了</button>
+      </div>
+    </div>
+
+    <!-- 美食清单 -->
+    <section class="bucket-list" id="bucketList">
+      <!-- 动态生成 -->
+    </section>
+
+    <!-- 地图视图 -->
+    <section class="map-view hidden" id="mapView">
+      <div class="map-header">
+        <button class="btn-back" id="btnBackToList">← 返回</button>
+        <h3>🗺️ 心愿地图</h3>
+      </div>
+      <div class="map-content" id="mapContent"></div>
+    </section>
+
+    <!-- 空状态 -->
+    <div class="empty-state hidden" id="emptyState">
+      <div class="empty-icon">🍽️</div>
+      <p>还没有美食心愿</p>
+      <p class="empty-hint">点击下方 + 按钮添加</p>
+    </div>
+
+    <!-- 底部添加按钮 -->
+    <button class="fab" id="btnAdd">+</button>
+  </div>
+
+  <!-- 添加/打卡表单弹窗 -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">添加心愿</h2>
+        <button class="btn-close" id="btnCloseModal">×</button>
+      </div>
+      <form id="itemForm">
+        <div class="form-group">
+          <label for="foodName">美食名称 *</label>
+          <input type="text" id="foodName" placeholder="如：北海道海胆饭" required>
+        </div>
+        <div class="form-group">
+          <label for="foodCategory">分类</label>
+          <select id="foodCategory">
+            <option value="日料">🍣 日料</option>
+            <option value="面食">🍜 面食</option>
+            <option value="火锅">🍲 火锅</option>
+            <option value="点心">🥮 点心</option>
+            <option value="烤肉">🥩 烤肉</option>
+            <option value="西餐">🍕 西餐</option>
+            <option value="饮品">🍺 饮品</option>
+            <option value="小吃">📍 地方小吃</option>
+            <option value="甜品">🍰 甜品</option>
+            <option value="其他">🍴 其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="foodLocation">想去的地方/餐厅</label>
+          <input type="text" id="foodLocation" placeholder="如：札幌 · 二条市场">
+        </div>
+        <div class="form-group">
+          <label for="foodNote">为什么想吃？</label>
+          <textarea id="foodNote" placeholder="写下你的理由..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>优先级</label>
+          <div class="priority-group">
+            <label class="priority-option">
+              <input type="radio" name="priority" value="3">
+              <span>🏆 此生必吃</span>
+            </label>
+            <label class="priority-option">
+              <input type="radio" name="priority" value="2" checked>
+              <span>💛 很想吃</span>
+            </label>
+            <label class="priority-option">
+              <input type="radio" name="priority" value="1">
+              <span>🌱 有机会就吃</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" id="btnSubmit">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 打卡弹窗 -->
+  <div class="modal hidden" id="checkinModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🎉 打卡完成！</h2>
+        <button class="btn-close" id="btnCloseCheckin">×</button>
+      </div>
+      <form id="checkinForm">
+        <div class="checkin-item-info" id="checkinItemInfo"></div>
+        <div class="form-group">
+          <label for="checkinPhoto">拍照记录</label>
+          <div class="photo-upload" id="photoUpload">
+            <input type="file" id="checkinPhoto" accept="image/*" capture="environment">
+            <div class="photo-placeholder">
+              <span>📷</span>
+              <p>点击拍照或选择照片</p>
+            </div>
+          </div>
+          <img id="photoPreview" class="photo-preview hidden">
+        </div>
+        <div class="form-group">
+          <label for="checkinNote">味道怎么样？</label>
+          <textarea id="checkinNote" placeholder="记录这一刻的感受..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">确认打卡</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 懒人数据库弹窗 -->
+  <div class="modal hidden" id="quickAddModal">
+    <div class="modal-content quick-add-modal">
+      <div class="modal-header">
+        <h2>🎁 懒人一键添加</h2>
+        <button class="btn-close" id="btnCloseQuickAdd">×</button>
+      </div>
+      <div class="quick-add-body">
+        <p class="quick-add-intro">内置 50 道经典美食，一键导入清单</p>
+        <div class="quick-add-actions">
+          <button class="btn-secondary" id="btnSelectAll">全选</button>
+          <button class="btn-secondary" id="btnSelectNone">取消全选</button>
+        </div>
+        <div class="builtin-list" id="builtinList"></div>
+      </div>
+      <div class="quick-add-footer">
+        <p class="import-info" id="importInfo">已选择 0 道美食</p>
+        <button class="btn-primary btn-import" id="btnImportBuiltin">📥 一键导入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情弹窗 -->
+  <div class="modal hidden" id="detailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="detailTitle">美食详情</h2>
+        <button class="btn-close" id="btnCloseDetail">×</button>
+      </div>
+      <div class="detail-content" id="detailContent"></div>
+    </div>
+  </div>
+
+  <!-- 倒计时设置弹窗 -->
+  <div class="modal hidden" id="countdownModal">
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h2>⏳ 遗愿倒计时</h2>
+        <button class="btn-close" id="btnCloseCountdown">×</button>
+      </div>
+      <form id="countdownForm">
+        <div class="form-group">
+          <label for="targetDate">目标日期</label>
+          <input type="date" id="targetDate" required>
+        </div>
+        <div class="form-group">
+          <label for="targetName">给这个日期起个名字（选填）</label>
+          <input type="text" id="targetName" placeholder="如：30岁生日">
+        </div>
+        <div class="countdown-presets">
+          <button type="button" class="btn-preset" data-days="365">一年后</button>
+          <button type="button" class="btn-preset" data-days="1825">5年后</button>
+          <button type="button" class="btn-preset" data-days="3650">10年后</button>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="btnClearCountdown">清除</button>
+          <button type="submit" class="btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 打卡分享弹窗 -->
+  <div class="modal hidden" id="shareModal">
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h2>🎉 打卡成功！</h2>
+        <button class="btn-close" id="btnCloseShare">×</button>
+      </div>
+      <div class="share-card" id="shareCard"></div>
+      <div class="form-actions">
+        <button class="btn-secondary" id="btnSaveCard">💾 保存图片</button>
+        <button class="btn-primary" id="btnShareIt">📤 分享</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 年度总结弹窗 -->
+  <div class="modal hidden" id="summaryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📊 年度美食报告</h2>
+        <button class="btn-close" id="btnCloseSummary">×</button>
+      </div>
+      <div class="summary-content" id="summaryContent"></div>
+      <div class="form-actions">
+        <button class="btn-secondary" id="btnShareSummary">📤 分享</button>
+        <button class="btn-primary" id="btnCloseSummaryBtn">好的</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认弹窗 -->
+  <div class="modal hidden" id="deleteModal">
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h2>确认删除</h2>
+      </div>
+      <p class="delete-message">确定要删除这个心愿吗？</p>
+      <div class="form-actions">
+        <button class="btn-secondary" id="btnCancelDelete">取消</button>
+        <button class="btn-danger" id="btnConfirmDelete">删除</button>
+      </div>
+    </div>
+
+    <!-- 隐藏的文件选择器 -->
+    <input type="file" id="importFile" accept=".json" class="hidden">
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
