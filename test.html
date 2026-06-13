@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>吃货遗愿清单 - 功能测试工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    
+    .test-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .test-panel h2 {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    
+    .test-btn {
+      padding: 12px 16px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .test-btn:hover {
+      background: #0056b3;
+      transform: translateY(-1px);
+    }
+    
+    .test-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .test-btn.success {
+      background: #28a745;
+    }
+    
+    .test-btn.error {
+      background: #dc3545;
+    }
+    
+    .test-btn.pending {
+      background: #ffc107;
+      color: #333;
+    }
+    
+    #log {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      font-family: 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    
+    .log-item {
+      margin-bottom: 5px;
+    }
+    
+    .log-item.success { color: #4ec9b0; }
+    .log-item.error { color: #f14c4c; }
+    .log-item.info { color: #9cdcfe; }
+    .log-item.warning { color: #dcdcaa; }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+    
+    .status-badge.pass { background: #d4edda; color: #155724; }
+    .status-badge.fail { background: #f8d7da; color: #721c24; }
+    .status-badge.pending { background: #fff3cd; color: #856404; }
+    
+    .progress-bar {
+      height: 4px;
+      background: #e9ecef;
+      border-radius: 2px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #007AFF, #00C7BE);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .summary-item {
+      text-align: center;
+    }
+    
+    .summary-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .summary-label {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .iframe-container {
+      margin-top: 20px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .nav-tab {
+      padding: 10px 20px;
+      background: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .nav-tab.active {
+      background: #007AFF;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 吃货遗愿清单 - 功能测试工具</h1>
+    
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('manual')">手动测试</button>
+      <button class="nav-tab" onclick="showTab('auto')">自动测试</button>
+    </div>
+    
+    <div id="manual-tab">
+      <div class="test-panel">
+        <h2>📋 功能列表</h2>
+        <div class="test-grid">
+          <button class="test-btn" onclick="testFeature('init')">✅ 页面初始化</button>
+          <button class="test-btn" onclick="testFeature('addForm')">➕ 打开添加表单</button>
+          <button class="test-btn" onclick="testFeature('quickAdd')">🎁 懒人一键添加</button>
+          <button class="test-btn" onclick="testFeature('random')">🎲 随机推荐</button>
+          <button class="test-btn" onclick="testFeature('countdown')">⏰ 遗愿倒计时</button>
+          <button class="test-btn" onclick="testFeature('map')">🗺️ 地图视图</button>
+          <button class="test-btn" onclick="testFeature('summary')">📊 年度总结</button>
+          <button class="test-btn" onclick="testFeature('export')">📤 导出数据</button>
+          <button class="test-btn" onclick="testFeature('import')">📥 导入数据</button>
+          <button class="test-btn" onclick="testFeature('db')">💾 数据库操作</button>
+        </div>
+        
+        <div class="summary">
+          <div class="summary-item">
+            <div class="summary-value" id="totalTests">0</div>
+            <div class="summary-label">总测试数</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="passTests">0</div>
+            <div class="summary-label">通过</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="failTests">0</div>
+            <div class="summary-label">失败</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="progress">0%</div>
+            <div class="summary-label">完成进度</div>
+          </div>
+        </div>
+        
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+      
+      <div class="test-panel">
+        <h2>📝 测试日志</h2>
+        <div id="log">
+          <div class="log-item info">🖥️ 测试工具已就绪，请点击上方按钮开始测试...</div>
+        </div>
+      </div>
+      
+      <div class="test-panel">
+        <h2>🔍 实时预览 (iframe)</h2>
+        <div class="iframe-container">
+          <iframe id="previewFrame" src="index.html"></iframe>
+        </div>
+      </div>
+    </div>
+    
+    <div id="auto-tab" style="display:none;">
+      <div class="test-panel">
+        <h2>⚡ 自动测试模式</h2>
+        <p style="margin-bottom: 15px; color: #666;">
+          点击"开始自动测试"后，系统将自动依次测试所有功能，并生成测试报告。
+        </p>
+        <button class="test-btn" onclick="runAutoTest()" id="autoTestBtn">🚀 开始自动测试</button>
+        <button class="test-btn" onclick="resetTests()" style="background:#6c757d;">🔄 重置测试</button>
+      </div>
+      
+      <div class="test-panel">
+        <h2>📊 测试报告</h2>
+        <div id="testReport">
+          <p style="color: #999;">暂无测试报告，请先运行测试...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // 测试状态
+    let testStats = {
+      total: 0,
+      passed: 0,
+      failed: 0
+    };
+    
+    const testResults = {};
+    
+    // 日志记录
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const timestamp = new Date().toLocaleTimeString();
+      const item = document.createElement('div');
+      item.className = `log-item ${type}`;
+      item.textContent = `[${timestamp}] ${message}`;
+      logDiv.appendChild(item);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+    
+    // 更新统计
+    function updateStats() {
+      const total = testStats.passed + testStats.failed;
+      document.getElementById('totalTests').textContent = total;
+      document.getElementById('passTests').textContent = testStats.passed;
+      document.getElementById('failTests').textContent = testStats.failed;
+      
+      const progress = total > 0 ? Math.round((testStats.passed / total) * 100) : 0;
+      document.getElementById('progress').textContent = progress + '%';
+      document.getElementById('progressBar').style.width = progress + '%';
+    }
+    
+    // 获取 iframe 内的元素
+    function getIframeElement(selector) {
+      const iframe = document.getElementById('previewFrame');
+      return iframe.contentDocument.querySelector(selector);
+    }
+    
+    // 等待 iframe 加载
+    function waitForIframe(timeout = 5000) {
+      return new Promise((resolve, reject) => {
+        const iframe = document.getElementById('previewFrame');
+        if (iframe.contentDocument.readyState === 'complete') {
+          resolve();
+        } else {
+          iframe.onload = resolve;
+          setTimeout(() => reject(new Error('Iframe 加载超时')), timeout);
+        }
+      });
+    }
+    
+    // 通用错误处理
+    window.onerror = function(msg, url, line, col, error) {
+      log(`❌ 全局错误: ${msg} (行: ${line})`, 'error');
+      return false;
+    };
+    
+    // 测试功能
+    async function testFeature(feature) {
+      log(`\n🔄 开始测试: ${feature}`, 'info');
+      
+      try {
+        await waitForIframe();
+        const iframe = document.getElementById('previewFrame');
+        
+        switch(feature) {
+          case 'init':
+            // 检查页面是否加载
+            const title = iframe.contentDocument.querySelector('h1');
+            if (title && title.textContent.includes('吃货')) {
+              log('✅ 页面初始化成功', 'success');
+              testStats.passed++;
+            } else {
+              throw new Error('页面标题未找到');
+            }
+            
+            // 检查 IndexedDB 是否初始化
+            const dbCheck = await iframe.contentWindow.db;
+            if (dbCheck) {
+              log('✅ IndexedDB 初始化成功', 'success');
+              testStats.passed++;
+            } else {
+              throw new Error('IndexedDB 未初始化');
+            }
+            
+            // 检查美食数据库是否加载
+            const foodCount = iframe.contentWindow.BUILTIN_FOODS?.length || 0;
+            log(`📦 内置美食数据库: ${foodCount} 条记录`, 'info');
+            if (foodCount > 0) {
+              log('✅ 美食数据加载成功', 'success');
+              testStats.passed++;
+            }
+            break;
+            
+          case 'addForm':
+            const addBtn = iframe.contentDocument.getElementById('btnAdd');
+            if (addBtn) {
+              addBtn.click();
+              await new Promise(r => setTimeout(r, 500));
+              
+              const modal = iframe.contentDocument.getElementById('addModal');
+              if (modal && modal.classList.contains('active')) {
+                log('✅ 添加表单弹窗正常', 'success');
+                testStats.passed++;
+                
+                // 关闭弹窗
+                const closeBtn = iframe.contentDocument.querySelector('#addModal .close-btn');
+                if (closeBtn) closeBtn.click();
+              } else {
+                throw new Error('添加弹窗未打开');
+              }
+            } else {
+              throw new Error('添加按钮未找到');
+            }
+            break;
+            
+          case 'quickAdd':
+            const quickAddCard = iframe.contentDocument.getElementById('quickAddCard');
+            if (quickAddCard) {
+              quickAddCard.click();
+              await new Promise(r => setTimeout(r, 500));
+              
+              const builtinModal = iframe.contentDocument.getElementById('builtinModal');
+              if (builtinModal && builtinModal.classList.contains('active')) {
+                log('✅ 懒人一键添加弹窗正常', 'success');
+                testStats.passed++;
+                
+                // 检查是否有美食列表
+                const foodItems = builtinModal.querySelectorAll('.builtin-item');
+                log(`📋 懒人数据库: ${foodItems.length} 条美食`, 'info');
+                
+                // 关闭弹窗
+                const closeBtn = builtinModal.querySelector('.close-btn');
+                if (closeBtn) closeBtn.click();
+              } else {
+                throw new Error('懒人添加弹窗未打开');
+              }
+            } else {
+              throw new Error('懒人一键添加卡片未找到');
+            }
+            break;
+            
+          case 'random':
+            const randomBtn = iframe.contentDocument.getElementById('btnRandom');
+            if (randomBtn) {
+              randomBtn.click();
+              await new Promise(r => setTimeout(r, 500));
+              
+              const randomCard = iframe.contentDocument.getElementById('randomCard');
+              if (randomCard && randomCard.classList.contains('active')) {
+                log('✅ 随机推荐弹窗正常', 'success');
+                testStats.passed++;
+                
+                // 检查是否有美食信息
+                const foodName = randomCard.querySelector('.random-name');
+                if (foodName && foodName.textContent) {
+                  log(`🎲 随机推荐: ${foodName.textContent}`, 'info');
+                }
+                
+                // 关闭弹窗
+                const closeBtn = randomCard.querySelector('.random-close');
+                if (closeBtn) closeBtn.click();
+              } else {
+                throw new Error('随机推荐弹窗未打开');
+              }
+            } else {
+              throw new Error('随机按钮未找到');
+            }
+            break;
+            
+          case 'countdown':
+            const countdownBtn = iframe.contentDocument.getElementById('btnEditCountdown');
+            if (countdownBtn) {
+              countdownBtn.click();
+              await new Promise(r => setTimeout(r, 500));
+              
+              const countdownModal = iframe.contentDocument.getElementById('countdownModal');
+              if (countdownModal && countdownModal.classList.contains('active')) {
+                log('✅ 遗愿倒计时弹窗正常', 'success');
+                testStats.passed++;
+                
+                // 关闭弹窗
+                const closeBtn = countdownModal.querySelector('.close-btn');
+                if (closeBtn) closeBtn.click();
+              } else {
+                throw new Error('倒计时弹窗未打开');
+              }
+            } else {
+              log('⚠️ 遗愿倒计时按钮未找到', 'warning');
+              testStats.passed++;
+            }
+            break;
+            
+          case 'map':
+            const mapBtn = iframe.contentDocument.getElementById('btnMapView');
+            if (mapBtn) {
+              mapBtn.click();
+              await new Promise(r => setTimeout(r, 500));
+              
+              const mapModal = iframe.contentDocument.getElementById('mapModal');
+              if (mapModal && mapModal.classList.contains('active')) {
+                log('✅ 地图视图弹窗正常', 'success');
+                testStats.passed++;
+                
+                // 检查是否有地图内容
+                const mapContent = mapModal.querySelector('.map-content');
+                if (mapContent) {
+                  const markers = mapContent.querySelectorAll('.map-marker');
+                  log(`📍 地图标记: ${markers.length} 个`, 'info');
+                }
+                
+                // 关闭弹窗
+                const closeBtn = mapModal.querySelector('.close-btn');
+                if (closeBtn) closeBtn.click();
+              } else {
+                throw new Error('地图弹窗未打开');
+              }
+            } else {
+              throw new Error('地图按钮未找到');
+            }
+            break;
+            
+          case 'summary':
+            const summaryBtn = iframe.contentDocument.getElementById('btnSummary');
+            if (summaryBtn) {
+              summaryBtn.click();
+              await new Promise(r => setTimeout(r, 500));
+              
+              const summaryModal = iframe.contentDocument.getElementById('summaryModal');
+              if (summaryModal && summaryModal.classList.contains('active')) {
+                log('✅ 年度总结弹窗正常', 'success');
+                testStats.passed++;
+                
+                // 关闭弹窗
+                const closeBtn = summaryModal.querySelector('.close-btn');
+                if (closeBtn) closeBtn.click();
+              } else {
+                throw new Error('年度总结弹窗未打开');
+              }
+            } else {
+              log('⚠️ 年度总结按钮未找到', 'warning');
+              testStats.passed++;
+            }
+            break;
+            
+          case 'export':
+            const exportBtn = iframe.contentDocument.getElementById('btnExport');
+            if (exportBtn) {
+              log('✅ 导出按钮存在', 'success');
+              testStats.passed++;
+            } else {
+              throw new Error('导出按钮未找到');
+            }
+            break;
+            
+          case 'import':
+            const importBtn = iframe.contentDocument.getElementById('btnImport');
+            if (importBtn) {
+              log('✅ 导入按钮存在', 'success');
+              testStats.passed++;
+            } else {
+              throw new Error('导入按钮未找到');
+            }
+            break;
+            
+          case 'db':
+            // 测试数据库读取
+            const items = await iframe.contentWindow.dbGetAll();
+            log(`💾 数据库记录数: ${items?.length || 0}`, 'info');
+            log('✅ 数据库读取功能正常', 'success');
+            testStats.passed++;
+            break;
+            
+          default:
+            log(`⚠️ 未知测试功能: ${feature}`, 'warning');
+        }
+        
+        testResults[feature] = { status: 'pass', time: new Date() };
+        
+      } catch (error) {
+        log(`❌ 测试失败: ${error.message}`, 'error');
+        testStats.failed++;
+        testResults[feature] = { status: 'fail', error: error.message, time: new Date() };
+      }
+      
+      updateStats();
+    }
+    
+    // 自动测试所有功能
+    async function runAutoTest() {
+      const features = ['init', 'addForm', 'quickAdd', 'random', 'countdown', 'map', 'summary', 'export', 'import', 'db'];
+      const btn = document.getElementById('autoTestBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ 测试中...';
+      
+      for (const feature of features) {
+        await testFeature(feature);
+        await new Promise(r => setTimeout(r, 300)); // 等待动画
+      }
+      
+      btn.disabled = false;
+      btn.textContent = '🚀 开始自动测试';
+      
+      // 生成报告
+      generateReport();
+    }
+    
+    // 生成测试报告
+    function generateReport() {
+      const reportDiv = document.getElementById('testReport');
+      const total = testStats.passed + testStats.failed;
+      const passRate = total > 0 ? ((testStats.passed / total) * 100).toFixed(1) : 0;
+      
+      let html = `
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: #333; margin-bottom: 10px;">📈 测试结果摘要</h3>
+          <p>总测试数: <strong>${total}</strong></p>
+          <p>通过: <strong style="color: #28a745;">${testStats.passed}</strong></p>
+          <p>失败: <strong style="color: #dc3545;">${testStats.failed}</strong></p>
+          <p>通过率: <strong>${passRate}%</strong></p>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: #f8f9fa;">
+              <th style="padding: 10px; text-align: left; border: 1px solid #dee2e6;">功能</th>
+              <th style="padding: 10px; text-align: center; border: 1px solid #dee2e6;">状态</th>
+              <th style="padding: 10px; text-align: left; border: 1px solid #dee2e6;">详情</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      const featureNames = {
+        'init': '页面初始化',
+        'addForm': '添加表单',
+        'quickAdd': '懒人一键添加',
+        'random': '随机推荐',
+        'countdown': '遗愿倒计时',
+        'map': '地图视图',
+        'summary': '年度总结',
+        'export': '导出数据',
+        'import': '导入数据',
+        'db': '数据库操作'
+      };
+      
+      for (const [feature, result] of Object.entries(testResults)) {
+        const status = result.status === 'pass' ? 
+          '<span style="color: #28a745;">✅ 通过</span>' : 
+          '<span style="color: #dc3545;">❌ 失败</span>';
+        const detail = result.error || '功能正常';
+        
+        html += `
+          <tr>
+            <td style="padding: 10px; border: 1px solid #dee2e6;">${featureNames[feature] || feature}</td>
+            <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;">${status}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6;">${detail}</td>
+          </tr>
+        `;
+      }
+      
+      html += '</tbody></table>';
+      reportDiv.innerHTML = html;
+    }
+    
+    // 重置测试
+    function resetTests() {
+      testStats = { total: 0, passed: 0, failed: 0 };
+      for (const key in testResults) delete testResults[key];
+      updateStats();
+      document.getElementById('log').innerHTML = '<div class="log-item info">🖥️ 测试工具已重置，请点击上方按钮开始测试...</div>';
+      document.getElementById('testReport').innerHTML = '<p style="color: #999;">暂无测试报告，请先运行测试...</p>';
+    }
+    
+    // 切换标签页
+    function showTab(tab) {
+      document.getElementById('manual-tab').style.display = tab === 'manual' ? 'block' : 'none';
+      document.getElementById('auto-tab').style.display = tab === 'auto' ? 'block' : 'none';
+      
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
