@@ -1177,9 +1177,28 @@ body.modal-open {
 
 .form-actions {
   display: flex;
+  justify-content: space-between;
   gap: 12px;
   padding: 20px 24px;
   border-top: 1px solid var(--border);
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 14px 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-secondary);
 }
 
 .btn-primary {
