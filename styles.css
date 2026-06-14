@@ -1773,6 +1773,15 @@ body.modal-open {
   font-size: 80px;
 }
 
+.share-photo {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin: 0 auto 12px;
+  display: block;
+}
+
 .share-tag {
   font-size: 12px;
   color: var(--text-muted);

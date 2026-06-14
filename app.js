@@ -952,6 +952,9 @@ function showShareModal(item) {
   shareItemData = item;
   const card = document.getElementById('shareCard');
   const date = new Date(item.completedAt).toLocaleDateString('zh-CN');
+  const photoHtml = item.photo 
+    ? `<img src="${item.photo}" class="share-photo" alt="打卡照片">`
+    : `<div class="share-qr">🍽️</div>`;
 
   card.innerHTML = `
     <div class="share-card-content">
@@ -959,7 +962,7 @@ function showShareModal(item) {
       <div class="share-icon">${CATEGORY_EMOJI[item.category] || '🍴'}</div>
       <div class="share-title">${item.name}</div>
       ${item.location ? `<div class="share-location">${item.location}</div>` : ''}
-      <div class="share-qr">🍽️</div>
+      ${photoHtml}
       <div class="share-tag">吃完再说 · ${date}</div>
     </div>
   `;
@@ -1001,29 +1004,50 @@ async function saveShareCard() {
   ctx.textAlign = 'center';
   ctx.fillText('✅ 已打卡', 300, 107);
 
-  // Emoji
-  ctx.font = '120px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('🍽️', 300, 320);
+  // 如果有照片则绘制照片，否则绘制 Emoji
+  if (shareItemData.photo) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise((resolve) => {
+      img.onload = resolve;
+      img.onerror = resolve;
+      img.src = shareItemData.photo;
+    });
+    // 绘制照片到圆形区域
+    ctx.save();
+    const photoX = 200, photoY = 160, photoSize = 200;
+    ctx.beginPath();
+    ctx.arc(photoX + photoSize / 2, photoY + photoSize / 2, photoSize / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(img, photoX, photoY, photoSize, photoSize);
+    ctx.restore();
+  } else {
+    // Emoji
+    ctx.font = '120px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🍽️', 300, 320);
+  }
 
   // 标题
   ctx.fillStyle = '#FF4757';
   ctx.font = 'bold 48px sans-serif';
-  ctx.fillText(shareItemData.name, 300, 420);
+  ctx.textAlign = 'center';
+  ctx.fillText(shareItemData.name, 300, shareItemData.photo ? 430 : 420);
 
   // 地点
   if (shareItemData.location) {
     ctx.fillStyle = '#A0A0B8';
     ctx.font = '24px sans-serif';
-    ctx.fillText(shareItemData.location, 300, 470);
+    ctx.fillText(shareItemData.location, 300, shareItemData.photo ? 480 : 470);
   }
 
   // 二维码占位
   ctx.fillStyle = 'white';
-  roundRect(ctx, 240, 520, 120, 120, 16);
+  roundRect(ctx, 240, shareItemData.photo ? 520 : 510, 120, 120, 16);
   ctx.fill();
   ctx.font = '60px sans-serif';
-  ctx.fillText('🍽️', 300, 605);
+  ctx.fillText('🍽️', 300, shareItemData.photo ? 605 : 595);
 
   // 底部
   ctx.fillStyle = '#6B6B8A';
