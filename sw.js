@@ -1,11 +1,11 @@
 // Service Worker for 吃货遗愿清单
 const CACHE_NAME = 'eat-item-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/manifest.json'
+  './',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './manifest.json'
 ];
 
 // 安装
@@ -46,6 +46,6 @@ self.addEventListener('fetch', (e) => {
           return response;
         });
       })
-      .catch(() => caches.match('/index.html'))
+      .catch(() => caches.match('./index.html'))
   );
 });
