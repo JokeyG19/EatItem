@@ -175,22 +175,26 @@ async function renderList() {
     emptyState.classList.add('hidden');
     container.innerHTML = filtered.map(item => `
       <div class="bucket-item ${item.status}" data-id="${item.id}">
-        <div class="item-icon">${CATEGORY_EMOJI[item.category] || '🍴'}</div>
-        <div class="item-content">
-          <div class="item-header">
-            <span class="item-name">${item.name}</span>
-            ${item.priority ? `<span class="item-priority priority-${item.priority}">${PRIORITY_TEXT[item.priority]}</span>` : ''}
+        <div class="item-main">
+          <div class="item-icon">${CATEGORY_EMOJI[item.category] || '🍴'}</div>
+          <div class="item-info">
+            <div class="item-header">
+              <span class="item-name">${item.name}</span>
+              ${item.priority ? `<span class="item-priority priority-${item.priority}">${PRIORITY_TEXT[item.priority]}</span>` : ''}
+            </div>
+            ${item.note ? `<div class="item-reason">💭 ${item.note}</div>` : ''}
+            <div class="item-meta">
+              ${item.location ? `<span class="item-location">📍 ${item.location}</span>` : ''}
+              ${item.completedAt ? `<span class="item-date">✅ ${formatDate(item.completedAt)}</span>` : ''}
+            </div>
           </div>
-          ${item.location ? `<div class="item-location">${item.location}</div>` : ''}
-          ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
-          ${item.completedAt ? `<div class="item-date">打卡于 ${formatDate(item.completedAt)}</div>` : ''}
-          <div class="item-actions">
-            ${item.status === 'pending'
-              ? `<button class="btn-action btn-eat" onclick="openCheckin('${item.id}')">吃到了！</button>`
-              : ''}
-            <button class="btn-action" onclick="openDetail('${item.id}')">详情</button>
-            <button class="btn-action" onclick="confirmDelete('${item.id}')">删除</button>
-          </div>
+        </div>
+        <div class="item-actions">
+          ${item.status === 'pending'
+            ? `<button class="btn-action btn-eat" onclick="openCheckin('${item.id}')">吃到了！</button>`
+            : ''}
+          <button class="btn-action" onclick="openDetail('${item.id}')">详情</button>
+          <button class="btn-action" onclick="confirmDelete('${item.id}')">删除</button>
         </div>
       </div>
     `).join('');
