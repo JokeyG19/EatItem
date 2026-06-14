@@ -200,13 +200,13 @@
         <div class="checkin-item-info" id="checkinItemInfo"></div>
         <div class="form-group">
           <label for="checkinPhoto">拍照记录</label>
-          <div class="photo-upload" id="photoUpload">
-            <input type="file" id="checkinPhoto" accept="image/*" capture="environment">
+          <label class="photo-upload-box" for="checkinPhoto">
+            <input type="file" id="checkinPhoto" accept="image/*" capture="environment" class="hidden">
             <div class="photo-placeholder">
-              <span>📷</span>
+              <span class="icon">📷</span>
               <p>点击拍照或选择照片</p>
             </div>
-          </div>
+          </label>
           <img id="photoPreview" class="photo-preview hidden">
         </div>
         <div class="form-group">

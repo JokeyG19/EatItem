@@ -626,10 +626,14 @@ function bindEvents() {
       if (file) {
         photoData = await compressPhoto(file);
         const photoPreview = document.getElementById('photoPreview');
-        const photoUpload = document.getElementById('photoUpload');
-        if (photoPreview) photoPreview.src = photoData;
-        if (photoPreview) photoPreview.classList.remove('hidden');
-        if (photoUpload) photoUpload.classList.add('hidden');
+        const photoPlaceholder = document.querySelector('.photo-placeholder');
+        if (photoPreview) {
+          photoPreview.src = photoData;
+          photoPreview.classList.remove('hidden');
+        }
+        if (photoPlaceholder) {
+          photoPlaceholder.classList.add('hidden');
+        }
       }
     });
   }
