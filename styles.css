@@ -1127,81 +1127,46 @@ body.modal-open {
   resize: vertical;
 }
 
-/* 优先级选项 */
+/* === 优先级选项 === */
 .priority-group {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .priority-option {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
+  gap: 10px;
+  padding: 12px 14px;
   background: var(--bg);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
-  flex: 1;
-  min-width: 120px;
+  transition: all 0.2s ease;
 }
 
 .priority-option:hover {
   border-color: var(--primary);
-  background: var(--bg-card);
+  background: var(--bg-hover);
 }
 
 .priority-option input[type="radio"] {
-  -webkit-appearance: none;
-  appearance: none;
   width: 18px;
   height: 18px;
-  margin: 0;
+  accent-color: var(--primary);
   cursor: pointer;
-  flex-shrink: 0;
-  border: 2px solid var(--border);
-  border-radius: 50%;
-  background: var(--bg);
-  transition: all 0.2s;
-  position: relative;
-}
-
-.priority-option input[type="radio"]:hover {
-  border-color: var(--primary);
-}
-
-.priority-option input[type="radio"]:checked {
-  border-color: var(--primary);
-  background: var(--bg);
-}
-
-.priority-option input[type="radio"]:checked::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  background: var(--primary);
-  border-radius: 50%;
 }
 
 .priority-option span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 14px;
   font-weight: 500;
   color: var(--text);
-  white-space: nowrap;
 }
 
-.priority-option input[type="radio"]:checked + span {
-  color: var(--primary);
-  font-weight: 600;
+.priority-option:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
 
 .form-row {
