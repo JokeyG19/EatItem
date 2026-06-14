@@ -1239,8 +1239,21 @@ body.modal-open {
 }
 
 .btn-danger {
+  flex: 1;
+  padding: 14px 24px;
   background: linear-gradient(135deg, #FF4757 0%, #FF6B81 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
   color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
 }
 
 /* === 打卡表单 === */

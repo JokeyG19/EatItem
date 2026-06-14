@@ -522,19 +522,31 @@ async function importData(file) {
 // ---- 事件绑定 ----
 function bindEvents() {
   // 启动画面
-  setTimeout(() => {
-    document.getElementById('splash').classList.add('fade-out');
-    document.getElementById('app').classList.remove('hidden');
-  }, 1500);
+  const splash = document.getElementById('splash');
+  const app = document.getElementById('app');
+  if (splash && app) {
+    setTimeout(() => {
+      splash.classList.add('fade-out');
+      app.classList.remove('hidden');
+    }, 1500);
+  }
 
   // 添加按钮
-  document.getElementById('btnAdd').addEventListener('click', openAddForm);
+  const btnAdd = document.getElementById('btnAdd');
+  if (btnAdd) btnAdd.addEventListener('click', openAddForm);
 
   // 关闭弹窗
-  document.getElementById('btnCloseModal').addEventListener('click', () => closeModal('modal'));
-  document.getElementById('btnCloseCheckin').addEventListener('click', () => closeModal('checkinModal'));
-  document.getElementById('btnCloseQuickAdd').addEventListener('click', () => closeModal('quickAddModal'));
-  document.getElementById('btnCloseDetail').addEventListener('click', closeDetail);
+  const btnCloseModal = document.getElementById('btnCloseModal');
+  if (btnCloseModal) btnCloseModal.addEventListener('click', () => closeModal('modal'));
+  
+  const btnCloseCheckin = document.getElementById('btnCloseCheckin');
+  if (btnCloseCheckin) btnCloseCheckin.addEventListener('click', () => closeModal('checkinModal'));
+  
+  const btnCloseQuickAdd = document.getElementById('btnCloseQuickAdd');
+  if (btnCloseQuickAdd) btnCloseQuickAdd.addEventListener('click', () => closeModal('quickAddModal'));
+  
+  const btnCloseDetail = document.getElementById('btnCloseDetail');
+  if (btnCloseDetail) btnCloseDetail.addEventListener('click', closeDetail);
 
   // 点击背景关闭
   document.querySelectorAll('.modal').forEach(modal => {
@@ -544,8 +556,11 @@ function bindEvents() {
   });
 
   // 表单提交
-  document.getElementById('itemForm').addEventListener('submit', submitItem);
-  document.getElementById('checkinForm').addEventListener('submit', submitCheckin);
+  const itemForm = document.getElementById('itemForm');
+  if (itemForm) itemForm.addEventListener('submit', submitItem);
+  
+  const checkinForm = document.getElementById('checkinForm');
+  if (checkinForm) checkinForm.addEventListener('submit', submitCheckin);
 
   // 筛选
   document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -558,61 +573,98 @@ function bindEvents() {
   });
 
   // 懒人添加
-  document.getElementById('quickAddCard').addEventListener('click', () => {
-    renderBuiltinList();
-    openModal('quickAddModal');
-  });
-  document.getElementById('btnSelectAll').addEventListener('click', () => {
-    document.querySelectorAll('#builtinList input').forEach(cb => cb.checked = true);
-    updateImportInfo();
-  });
-  document.getElementById('btnSelectNone').addEventListener('click', () => {
-    document.querySelectorAll('#builtinList input').forEach(cb => cb.checked = false);
-    updateImportInfo();
-  });
-  document.getElementById('btnImportBuiltin').addEventListener('click', importBuiltin);
+  const quickAddCard = document.getElementById('quickAddCard');
+  if (quickAddCard) {
+    quickAddCard.addEventListener('click', () => {
+      renderBuiltinList();
+      openModal('quickAddModal');
+    });
+  }
+  
+  const btnSelectAll = document.getElementById('btnSelectAll');
+  if (btnSelectAll) {
+    btnSelectAll.addEventListener('click', () => {
+      document.querySelectorAll('#builtinList input').forEach(cb => cb.checked = true);
+      updateImportInfo();
+    });
+  }
+  
+  const btnSelectNone = document.getElementById('btnSelectNone');
+  if (btnSelectNone) {
+    btnSelectNone.addEventListener('click', () => {
+      document.querySelectorAll('#builtinList input').forEach(cb => cb.checked = false);
+      updateImportInfo();
+    });
+  }
+  
+  const btnImportBuiltin = document.getElementById('btnImportBuiltin');
+  if (btnImportBuiltin) btnImportBuiltin.addEventListener('click', importBuiltin);
 
   // 数据备份/恢复
-  document.getElementById('btnExport').addEventListener('click', exportData);
-  document.getElementById('btnImport').addEventListener('click', () => {
-    document.getElementById('importFile').click();
-  });
-  document.getElementById('importFile').addEventListener('change', (e) => {
-    if (e.target.files[0]) {
-      importData(e.target.files[0]);
-      e.target.value = '';
-    }
-  });
+  const btnExport = document.getElementById('btnExport');
+  if (btnExport) btnExport.addEventListener('click', exportData);
+  
+  const btnImport = document.getElementById('btnImport');
+  const importFile = document.getElementById('importFile');
+  if (btnImport && importFile) {
+    btnImport.addEventListener('click', () => {
+      importFile.click();
+    });
+    importFile.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        importData(e.target.files[0]);
+        e.target.value = '';
+      }
+    });
+  }
 
   // 照片上传
-  document.getElementById('checkinPhoto').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      photoData = await compressPhoto(file);
-      document.getElementById('photoPreview').src = photoData;
-      document.getElementById('photoPreview').classList.remove('hidden');
-      document.getElementById('photoUpload').classList.add('hidden');
-    }
-  });
+  const checkinPhoto = document.getElementById('checkinPhoto');
+  if (checkinPhoto) {
+    checkinPhoto.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        photoData = await compressPhoto(file);
+        const photoPreview = document.getElementById('photoPreview');
+        const photoUpload = document.getElementById('photoUpload');
+        if (photoPreview) photoPreview.src = photoData;
+        if (photoPreview) photoPreview.classList.remove('hidden');
+        if (photoUpload) photoUpload.classList.add('hidden');
+      }
+    });
+  }
 
   // 删除确认
-  document.getElementById('btnCancelDelete').addEventListener('click', () => closeModal('deleteModal'));
-  document.getElementById('btnConfirmDelete').addEventListener('click', executeDelete);
+  const btnCancelDelete = document.getElementById('btnCancelDelete');
+  if (btnCancelDelete) btnCancelDelete.addEventListener('click', () => closeModal('deleteModal'));
+  
+  const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+  if (btnConfirmDelete) btnConfirmDelete.addEventListener('click', executeDelete);
 
   // iOS Banner 关闭
-  document.getElementById('btnCloseIOSBanner').addEventListener('click', () => {
-    document.getElementById('iosBanner').classList.add('hidden');
-    localStorage.setItem('iosBannerDismissed', 'true');
-  });
+  const btnCloseIOSBanner = document.getElementById('btnCloseIOSBanner');
+  if (btnCloseIOSBanner) {
+    btnCloseIOSBanner.addEventListener('click', () => {
+      const iosBanner = document.getElementById('iosBanner');
+      if (iosBanner) iosBanner.classList.add('hidden');
+      localStorage.setItem('iosBannerDismissed', 'true');
+    });
+  }
 
   // 倒计时
   const btnEditCountdown = document.getElementById('btnEditCountdown');
   if (btnEditCountdown) {
     btnEditCountdown.addEventListener('click', openCountdownModal);
   }
-  document.getElementById('countdownForm').addEventListener('submit', saveCountdown);
-  document.getElementById('btnClearCountdown').addEventListener('click', clearCountdown);
-  document.getElementById('btnCloseCountdown').addEventListener('click', () => closeModal('countdownModal'));
+  
+  const countdownForm = document.getElementById('countdownForm');
+  if (countdownForm) countdownForm.addEventListener('submit', saveCountdown);
+  
+  const btnClearCountdown = document.getElementById('btnClearCountdown');
+  if (btnClearCountdown) btnClearCountdown.addEventListener('click', clearCountdown);
+  
+  const btnCloseCountdown = document.getElementById('btnCloseCountdown');
+  if (btnCloseCountdown) btnCloseCountdown.addEventListener('click', () => closeModal('countdownModal'));
 
   // 倒计时预设
   document.querySelectorAll('.btn-preset').forEach(btn => {
@@ -620,34 +672,58 @@ function bindEvents() {
       const days = parseInt(btn.dataset.days);
       const target = new Date();
       target.setDate(target.getDate() + days);
-      document.getElementById('targetDate').value = target.toISOString().slice(0, 10);
+      const targetDate = document.getElementById('targetDate');
+      if (targetDate) targetDate.value = target.toISOString().slice(0, 10);
     });
   });
 
   // 随机推荐
-  document.getElementById('btnRandom').addEventListener('click', showRandomItem);
-  document.getElementById('btnCloseRandom').addEventListener('click', closeRandomCard);
-  document.getElementById('btnRandomEat').addEventListener('click', randomItemCheckin);
-  document.getElementById('btnRandomAdd').addEventListener('click', randomItemAddToList);
+  const btnRandom = document.getElementById('btnRandom');
+  if (btnRandom) btnRandom.addEventListener('click', showRandomItem);
+  
+  const btnCloseRandom = document.getElementById('btnCloseRandom');
+  if (btnCloseRandom) btnCloseRandom.addEventListener('click', closeRandomCard);
+  
+  const btnRandomEat = document.getElementById('btnRandomEat');
+  if (btnRandomEat) btnRandomEat.addEventListener('click', randomItemCheckin);
+  
+  const btnRandomAdd = document.getElementById('btnRandomAdd');
+  if (btnRandomAdd) btnRandomAdd.addEventListener('click', randomItemAddToList);
 
   // 年度总结
   const btnSummary = document.getElementById('btnSummary');
   if (btnSummary) {
     btnSummary.addEventListener('click', showYearSummary);
   }
-  document.getElementById('countdownMini').addEventListener('click', openCountdownModal);
-  document.getElementById('btnCloseSummary').addEventListener('click', () => closeModal('summaryModal'));
-  document.getElementById('btnCloseSummaryBtn').addEventListener('click', () => closeModal('summaryModal'));
-  document.getElementById('btnShareSummary').addEventListener('click', shareSummary);
+  
+  const countdownMini = document.getElementById('countdownMini');
+  if (countdownMini) countdownMini.addEventListener('click', openCountdownModal);
+  
+  const btnCloseSummary = document.getElementById('btnCloseSummary');
+  if (btnCloseSummary) btnCloseSummary.addEventListener('click', () => closeModal('summaryModal'));
+  
+  const btnCloseSummaryBtn = document.getElementById('btnCloseSummaryBtn');
+  if (btnCloseSummaryBtn) btnCloseSummaryBtn.addEventListener('click', () => closeModal('summaryModal'));
+  
+  const btnShareSummary = document.getElementById('btnShareSummary');
+  if (btnShareSummary) btnShareSummary.addEventListener('click', shareSummary);
 
   // 打卡分享
-  document.getElementById('btnCloseShare').addEventListener('click', closeShareModal);
-  document.getElementById('btnSaveCard').addEventListener('click', saveShareCard);
-  document.getElementById('btnShareIt').addEventListener('click', shareCheckin);
+  const btnCloseShare = document.getElementById('btnCloseShare');
+  if (btnCloseShare) btnCloseShare.addEventListener('click', closeShareModal);
+  
+  const btnSaveCard = document.getElementById('btnSaveCard');
+  if (btnSaveCard) btnSaveCard.addEventListener('click', saveShareCard);
+  
+  const btnShareIt = document.getElementById('btnShareIt');
+  if (btnShareIt) btnShareIt.addEventListener('click', shareCheckin);
 
   // 地图视图
-  document.getElementById('btnMapView').addEventListener('click', openMapView);
-  document.getElementById('btnBackToList').addEventListener('click', closeMapView);
+  const btnMapView = document.getElementById('btnMapView');
+  if (btnMapView) btnMapView.addEventListener('click', openMapView);
+  
+  const btnBackToList = document.getElementById('btnBackToList');
+  if (btnBackToList) btnBackToList.addEventListener('click', closeMapView);
 }
 
 // ---- 倒计时功能 ----
