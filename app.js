@@ -309,14 +309,23 @@ async function submitItem(e) {
 async function openCheckin(id) {
   checkinItemId = id;
   const item = await dbGet(id);
-  document.getElementById('checkinItemInfo').innerHTML = `
-    <div class="item-icon">${CATEGORY_EMOJI[item.category] || '🍴'}</div>
-    <div class="item-name">${item.name}</div>
-  `;
-  document.getElementById('checkinForm').reset();
+  const checkinItemInfo = document.getElementById('checkinItemInfo');
+  if (checkinItemInfo) {
+    checkinItemInfo.innerHTML = `
+      <div class="item-icon">${CATEGORY_EMOJI[item.category] || '🍴'}</div>
+      <div class="item-name">${item.name}</div>
+    `;
+  }
+  const checkinForm = document.getElementById('checkinForm');
+  if (checkinForm) checkinForm.reset();
   photoData = null;
-  document.getElementById('photoPreview').classList.add('hidden');
-  document.getElementById('photoUpload').classList.remove('hidden');
+  
+  const photoPreview = document.getElementById('photoPreview');
+  if (photoPreview) photoPreview.classList.add('hidden');
+  
+  const photoPlaceholder = document.querySelector('.photo-placeholder');
+  if (photoPlaceholder) photoPlaceholder.classList.remove('hidden');
+  
   openModal('checkinModal');
 }
 
