@@ -1154,12 +1154,39 @@ body.modal-open {
 }
 
 .priority-option input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
   width: 18px;
   height: 18px;
   margin: 0;
   cursor: pointer;
-  accent-color: var(--primary);
   flex-shrink: 0;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  transition: all 0.2s;
+  position: relative;
+}
+
+.priority-option input[type="radio"]:hover {
+  border-color: var(--primary);
+}
+
+.priority-option input[type="radio"]:checked {
+  border-color: var(--primary);
+  background: var(--bg);
+}
+
+.priority-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
 }
 
 .priority-option span {
