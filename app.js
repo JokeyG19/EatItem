@@ -39,7 +39,7 @@ async function loadBuiltinFoods() {
 // ---- 分类 emoji 映射 ----
 // 注意：CATEGORY_EMOJI 通过 loadBuiltinFoods() 动态加载
 
-const PRIORITY_TEXT = { 3: '🏆 此生必吃', 2: '💛 很想吃', 1: '🌱 有机会就吃' };
+const PRIORITY_TEXT = { 3: '🏆 此生必吃', 2: '💛 很想吃', 1: '🌱 有机会就吃', 'undefined': '' };
 
 // ---- IndexedDB 操作 ----
 const DB_NAME = 'EatItemDB';
@@ -179,7 +179,7 @@ async function renderList() {
         <div class="item-content">
           <div class="item-header">
             <span class="item-name">${item.name}</span>
-            <span class="item-priority priority-${item.priority}">${PRIORITY_TEXT[item.priority]}</span>
+            ${item.priority ? `<span class="item-priority priority-${item.priority}">${PRIORITY_TEXT[item.priority]}</span>` : ''}
           </div>
           ${item.location ? `<div class="item-location">${item.location}</div>` : ''}
           ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
@@ -353,7 +353,7 @@ async function openDetail(id) {
       ${item.location ? `<div class="detail-location">${item.location}</div>` : ''}
       ${item.note ? `<div class="detail-note">${item.note}</div>` : ''}
       <div class="detail-meta">
-        <span class="priority-${item.priority}">${PRIORITY_TEXT[item.priority]}</span>
+        ${item.priority ? `<span class="priority-${item.priority}">${PRIORITY_TEXT[item.priority]}</span>` : ''}
         <span>${item.status === 'completed' ? '✅ 已打卡' : '⬜ 待完成'}</span>
       </div>
     </div>
