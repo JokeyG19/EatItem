@@ -278,8 +278,10 @@ function closeModal(modalId) {
 function closeAllModals() {
   document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
   photoData = null;
-  document.getElementById('photoPreview').classList.add('hidden');
-  document.getElementById('photoUpload').classList.remove('hidden');
+  const photoPreview = document.getElementById('photoPreview');
+  if (photoPreview) photoPreview.classList.add('hidden');
+  const photoPlaceholder = document.getElementById('photoPlaceholder');
+  if (photoPlaceholder) photoPlaceholder.classList.remove('hidden');
 }
 
 // ---- 添加心愿 ----
