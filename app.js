@@ -158,10 +158,11 @@ async function renderList() {
   if (currentFilter === 'pending') filtered = pending;
   else if (currentFilter === 'completed') filtered = completed;
 
-  // 按优先级和创建时间排序
+  // 按状态和创建时间排序（新添加的在前）
   filtered.sort((a, b) => {
+    // 待完成优先
     if (a.status !== b.status) return a.status === 'pending' ? -1 : 1;
-    if (a.priority !== b.priority) return b.priority - a.priority;
+    // 按创建时间倒序（最新的在前）
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
